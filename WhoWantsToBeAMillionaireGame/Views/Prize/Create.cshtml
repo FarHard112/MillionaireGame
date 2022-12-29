@@ -1,0 +1,34 @@
+﻿@{
+    Layout = "_Layout";
+}
+
+@model PrizePostModel
+@{
+    ViewData["Title"] = "Hədiyyə pəncərəsi";
+}
+
+<h2>Yeni hədiyyə əlavə et</h2>
+
+<div class="col-8">
+    <form asp-controller="Prize" asp-action="Create" method="post">
+        <div asp-validation-summary="All" class="text-danger"></div>
+        <div class="mb-3">
+            <label for="text" class="form-label">Hədiyyə mətni</label>
+            <textarea asp-for="Text" class="form-control" id="text" rows="3"></textarea>
+            <span asp-validation-for="Text" class="text-danger"></span>
+            <select asp-for="ColorId" asp-items="@(new SelectList(ViewBag.PrizesColor,"Id","Text"))" class="form-select" aria-label="Hədiyyəyə uyğun rəngi seçin"></select>
+        </div>
+
+        <div>
+        </div>
+
+        <input asp-for="Id" type="hidden" />
+        <input type="submit" class="btn btn-primary" value="Tamamla" />
+    </form>
+</div>
+
+@section Scripts
+    {
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+}

@@ -1,0 +1,32 @@
+﻿@using System.Globalization
+@model (Guid, string,Guid)
+
+
+<tr>
+    <td>
+        <div class="d-grid gap-2 rcorners" id="winning-@Model.Item1">
+            <div class="align-self-center text-center" style='background-color: @(Model.Item3.ToString() == "8bbc22e2-0632-49aa-8525-6b27414d7508" ? "#dfff10" : Model.Item3.ToString()=="598895f0-7e6f-4998-9362-b237006bc0b2"?"#ff0000":"#42f700");'>
+                @{
+                    var importantSteps = new List<string> { "A6CE5656-E84E-48B7-56B4-08DAD9BE11F0", "723397BC-5395-47FB-56B5-08DAD9BE11F0", "1164A51C-11DF-482B-56B6-08DAD9BE11F0" };
+                    if (importantSteps.Contains(Model.Item1.ToString()))
+                    {
+                        <span>
+                            <b>@Model.Item2:</b>
+                        </span>
+                        <span>
+                            @*<b>@Model.Item2.ToString("C0", new CultureInfo("pl-PL"))</b>*@
+                            @*<b>@Model.Item2</b>*@
+                        </span>
+                    }
+                    else
+                    {
+                        @* <span>@Model.Item1:</span>*@
+                        @*<span>@Model.Item2.ToString("C0", new CultureInfo("pl-PL"))</span>*@
+                        <span>  <b>@Model.Item2</b></span>
+                      
+                    }
+                }
+            </div>
+        </div>
+    </td>
+</tr>
