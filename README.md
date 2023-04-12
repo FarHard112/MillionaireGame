@@ -9,6 +9,7 @@ Millionaire Game is a fun, interactive console-based quiz game inspired by the p
 - Difficulty increases as players progress through the game
 - Web-based application that's easy to run and play
 - Admin Panel for controlling the game 
+- Advertising logic (Impressions and Clicks)
 
 ## Getting Started
 
@@ -19,10 +20,6 @@ To play Millionaire Game, you'll need:
 - A computer running Windows, macOS, or Linux
 - .NET runtime installed on your system
 
-### Installation
-
-1. Clone the repository:
-git clone https://github.com/FarHard112/MillionaireGame.git
 
 
 
