@@ -1,0 +1,4 @@
+﻿.selected-placement {
+    border: 2px solid red;
+    position: absolute;
+}

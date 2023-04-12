@@ -14,7 +14,11 @@ public class UnitOfWork : IUnitOfWork
     public IRepository<Game> Game { get; }
     public IRepository<GameQuestion> GameQuestion { get; }
     public IRepository<Prize> GamePrize { get; }
-    public IRepository<ColorPrize>ColorPrize { get; }
+    public IRepository<ColorPrize> ColorPrize { get; }
+    public IRepository<LoginUser> LoginUser { get; }
+    public IRepository<Advertise> Advertise { get; }
+    public IRepository<ClickedAd> ClickedAd { get; }
+    public IRepository<GameTimer> GameTimer { get; }
 
 
     public UnitOfWork(WhoWantsToBeAMillionaireGameDbContext dbContext,
@@ -22,7 +26,7 @@ public class UnitOfWork : IUnitOfWork
         IRepository<Answer> answer,
         IRepository<Game> game,
         IRepository<GameQuestion> gameQuestion,
-        IRepository<Prize>gamePrize, IRepository<ColorPrize> colorPrize)
+        IRepository<Prize> gamePrize, IRepository<ColorPrize> colorPrize, IRepository<LoginUser> loginUser, IRepository<Advertise> advertise, IRepository<ClickedAd> clickedAd,IRepository<GameTimer>gameTimer)
     {
         _dbContext = dbContext;
 
@@ -32,10 +36,22 @@ public class UnitOfWork : IUnitOfWork
         GameQuestion = gameQuestion;
         GamePrize = gamePrize;
         ColorPrize = colorPrize;
+        LoginUser = loginUser;
+        Advertise = advertise;
+        ClickedAd= clickedAd;
+        GameTimer = gameTimer;
     }
 
     public async Task<int> Commit()
     {
-        return await _dbContext.SaveChangesAsync();
+        try
+        {
+            return await _dbContext.SaveChangesAsync();
+        }
+        catch (DbUpdateException ex)
+        {
+            var innerException = ex.InnerException;
+            throw new Exception($"An error occurred while saving the entity changes: {innerException.Message}", ex);
+        }
     }
 }

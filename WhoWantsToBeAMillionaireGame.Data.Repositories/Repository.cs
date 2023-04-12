@@ -42,10 +42,12 @@ public class Repository<T> : IRepository<T>
         await DbSet.AddRangeAsync(entities);
     }
 
-    public virtual void Update(T entity)
+    public virtual async Task UpdateAsync(T entity)
     {
         DbSet.Update(entity);
+        await DbContext.SaveChangesAsync();
     }
+
 
     public async Task PatchAsync(Guid id, List<PatchModel> patchData)
     {
@@ -66,5 +68,12 @@ public class Repository<T> : IRepository<T>
     public virtual void Remove(T entity)
     {
         DbSet.Remove(entity);
+    }
+
+    public async Task<T?> FirstOrDefaultAsync(Func<T, bool> value)
+    {
+        return await DbSet
+        .AsNoTracking()
+        .FirstOrDefaultAsync(entity => value(entity));
     }
 }

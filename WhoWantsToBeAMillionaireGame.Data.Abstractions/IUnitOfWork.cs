@@ -11,6 +11,9 @@ public interface IUnitOfWork
     IRepository<GameQuestion> GameQuestion { get; }
     IRepository<Prize> GamePrize { get; }
     IRepository<ColorPrize> ColorPrize { get; }
-
+    IRepository<LoginUser> LoginUser { get; }
+    IRepository<Advertise> Advertise { get; }
+    IRepository<ClickedAd> ClickedAd { get; }
+    IRepository<GameTimer> GameTimer { get; }
     Task<int> Commit();
 }

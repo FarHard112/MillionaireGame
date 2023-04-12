@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using NetCoreAudio;
 using Serilog;
 using WhoWantsToBeAMillionaireGame.Core.Abstractions;
 using WhoWantsToBeAMillionaireGame.Models;
@@ -13,15 +12,18 @@ public class GameController : Controller
     private readonly IMapper _mapper;
     private readonly IGameService _gameService;
     private readonly IPrizeService _prizeService;
-
+    private readonly IAdvertiseService _advertiseService;
+    private readonly IClickedAdService _clickedAdService;
     private const string GameSessionKey = "_Game";
 
     public GameController(IMapper mapper,
-        IGameService gameService, IPrizeService prizeService)
+        IGameService gameService, IPrizeService prizeService, IAdvertiseService advertiseService, IClickedAdService clickedAdService)
     {
         _mapper = mapper;
         _gameService = gameService;
         _prizeService = prizeService;
+        _advertiseService = advertiseService;
+        _clickedAdService = clickedAdService;
     }
 
     [HttpGet]
@@ -47,8 +49,9 @@ public class GameController : Controller
             var dto = await _gameService.GetGameById(gameSession.GameId);
             var model = _mapper.Map<GameModel>(dto);
             model.PrizeList = await _prizeService.GetAllPrizesAsync();
+            var advertises = await _advertiseService.GetAllAdvertisesAsync();
+            if (advertises.FirstOrDefault(x => x.AdStatus) != null) model.Advertisement = advertises.FirstOrDefault(x => x.AdStatus);
             model.UserChoice = gameSession.UserChoiceId;
-
             return View(model);
         }
         catch (Exception e)
@@ -71,8 +74,6 @@ public class GameController : Controller
             }
 
             var isCorrect = await _gameService.IsAnswerCorrect(userChoice);
-            if (isCorrect == false)
-                PlayIncorrectSound();
 
             return Ok(isCorrect);
         }
@@ -204,12 +205,6 @@ public class GameController : Controller
         }
     }
 
-    private void PlayIncorrectSound()
-    {
-        var player = new Player();
-        player.Play("SoundEffects/incorrectAnswer.wav");
-    }
-
     [HttpGet]
     public IActionResult GetNextGameQuestion()
     {
@@ -254,5 +249,24 @@ public class GameController : Controller
             throw new ArgumentException("Failed to get value from session find session.");
 
         return gameSession.QuestionNumber;
+    }
+    //Count user advertise Click 
+    [HttpPost]
+    public async Task<IActionResult> RegisterAdClick([FromQuery] Guid Id)
+    {
+        try
+        {
+            var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString();
+            await _clickedAdService.RegisterAdClick(Id, ipAddress);
+            return Json("OK");
+        }
+        catch (Exception ex)
+        {
+
+            Log.Error($"{ex.Message}. {Environment.NewLine} {ex.StackTrace}");
+            return StatusCode(500);
+        }
+
+
     }
 }

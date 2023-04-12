@@ -14,9 +14,10 @@ public interface IRepository<T> where T : IBaseEntity
     Task AddRangeAsync(IEnumerable<T> entities);
 
     //UPDATE
-    void Update(T entity);
+    Task UpdateAsync(T entity);
     Task PatchAsync(Guid id, List<PatchModel> patchData);
 
     //DELETE
     void Remove(T entity);
+    Task<T?> FirstOrDefaultAsync(Func<T, bool> value);
 }

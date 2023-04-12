@@ -7,14 +7,13 @@
     ViewData["Title"] = "Oyun";
 }
 
-<h2>Oyun</h2>
 
 <div class="container">
 
     <div class="row">
         <div class="col-8 align-self-end">
             <div class="col mb-2 align-self-center text-center">
-                <span class="fs-2" id="message"></span>
+                <span styl="color:red" class="fs-2" id="message"></span>
             </div>
 
             <div class="mb-5 pb-5">
@@ -29,6 +28,15 @@
                 </div>
 
             </div>
+            @*Timer *@
+            <div class="col mb-2 align-self-center text-center">
+                <span class="fs-2" id="message"></span>
+                <div class="timer-container">
+                    <span class="fs-2" id="timer">60</span>
+                </div>
+            </div>
+
+
             <div class="d-grid gap-2 col">
                 <button type="button" class="btn btn-secondary" onclick="giveMeMyMoney()" hidden id="give-me-my-money">Hədiyyəni götürmək istəyirəm</button>
             </div>
@@ -65,7 +73,7 @@
                 <tbody>
                     @{
                         var winnings = new List<int> { 1000000, 500000, 250000, 125000, 64000, 32000, 16000, 8000, 4000, 2000, 1000, 500, 300, 200, 100 };
-                        
+
                         var i = 15;
                         foreach (var prize in Model.PrizeList)
                         {
@@ -79,17 +87,111 @@
     </div>
 
 </div>
+@if (Model.Advertisement != null)
+{
+    <!-- Advertising area -->
+    <div class="row mt-5">
+        <div class="col">
+            <div class="advertising-area" onclick="handleAdClick(event, '@Model.Advertisement.Id', '@Model.Advertisement.TargetUrl')" style="background-color: #f8f9fa; height: 250px; width: 100%; text-align: center;">
+                <img src="@Model.Advertisement.ImageUrl" />
+                <a href="@Model.Advertisement.TargetUrl"></a>
+            </div>
+        </div>
+    </div>
+}
 
 
 @section Scripts
     {
     <script type="text/javascript">
+        let timer;
+        let timeLeft = 10;
+
+        $(document).ready(function () {
+            @if (Model.Advertisement != null)
+        {
+            <text>
+                sendAdIdToMiddleware('@Model.Advertisement.Id');
+            </text>
+        }
+            startTimer();
+
+        });
+
         function getUserChoiceFromModel() {
 
             let userChoice = "@Model.UserChoice";
 
             return userChoice;
         }
+        function handleAdClick(event, adId, targetUrl) {
+            event.preventDefault(); // Prevent the default click action
+            registerAdClick(adId);
+            window.open(targetUrl, '_blank'); // Open the target URL in a new tab or window
+        }
+
+        function registerAdClick(adId) {
+            $.ajax({
+                type: 'POST',
+                url: '/Game/RegisterAdClick?Id=' + adId,
+                success: function () {
+                    console.log('Ad click registered successfully');
+                },
+                error: function (xhr) {
+                    console.error('Error registering ad click:', xhr.responseText);
+                }
+            });
+        }
+
+
+        function sendAdIdToMiddleware(adId) {
+            $.ajax({
+                type: 'GET',
+                url: '/PageLoadEvent',
+                data: { adId: adId },
+                success: function () {
+                    console.log('Ad ID sent successfully');
+                },
+                error: function (xhr) {
+                    console.error('Error sending ad ID:', xhr.responseText);
+                }
+            });
+        }
+
+        function startTimer() {
+            const timerElement = document.getElementById('timer');
+            timerElement.classList.add('timer-animation');
+
+            timer = setInterval(function() {
+                timeLeft--;
+                timerElement.textContent = timeLeft;
+
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    timerElement.classList.remove('timer-animation');
+                    handleTimeUp();
+                }
+            }, 1000);
+        }
+
+        function handleTimeUp() {
+            document.getElementById('message').textContent = "Vaxt bitdi!";
+            document.querySelectorAll('.answer-button').forEach(button => button.disabled = true);
+
+            // Send an AJAX request to the GameOver endpoint
+            $.ajax({
+                type: 'GET',
+                url: '/Game/GameOver',
+                success: function () {
+                   alert("Oyun bitdi !");
+                   window.location.href = '/';
+                },
+                error: function (xhr) {
+                    console.error('Error sending Game Over request:', xhr.responseText);
+                }
+            });
+        }
+
     </script>
 
     <script src="~/js/api-tools.js" asp-append-version="true"></script>

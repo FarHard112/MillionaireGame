@@ -1,0 +1,178 @@
+﻿@{
+    Layout = "~/Areas/AdminGame/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .highlighted-area {
+        position: absolute;
+        border: 2px solid red;
+        pointer-events: none;
+    }
+
+    .custom-modal-lg {
+        max-width: 1200px; /* Adjust this value according to your desired width */
+    }
+
+    /* Custom styles */
+
+    .table-striped tbody tr:nth-of-type(odd) { background-color: rgba(0, 0, 0, .05); }
+
+    .table-striped tbody tr:hover { background-color: rgba(0, 0, 0, .075); }
+
+    .btn i { margin-right: 5px; }
+
+    /* Bigger table */
+
+    .table-bigger {
+        font-size: 1.25rem; /* Adjust font size */
+    }
+
+    .table-bigger td, .table-bigger th {
+        padding: 20px; /* Adjust padding */
+    }
+
+</style>
+
+<div ng-controller="advertiseController" class="container" ng-init="onPageLoad()">
+    <div class="row">
+        <div class="col-12">
+            <h2>Reklamların İdarə Paneli</h2>
+        </div>
+        <div class="col-12 mb-3">
+            <button type="button" ng-click="newAdvertiseClick()" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#advertiseModal">
+                <i class="fas fa-plus"></i> Yeni Reklam
+            </button>
+            <h4 style="color: red">*Eyni zamanda ancaq 1 reklam aktiv ola bilər!</h4>
+        </div>
+    </div>
+
+    <!-- Advertise List -->
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped table-bigger">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th><i class="fas fa-heading"></i> Başlıq</th>
+                <th><i class="fas fa-info-circle"></i> Haqqında</th>
+                <th><i class="fas fa-image"></i>Şəkil</th>
+                <th><i class="fas fa-toggle-on"></i>Statusu</th>
+                <th><i class="fas fa-cogs"></i> Əməliyyatlar</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="ad in adverts">
+                <td>{{$index+1}}</td>
+                <td>{{ad.title}}</td>
+                <td>{{ad.description}}</td>
+                <td>
+                    <a href="/{{ad.imageUrl}}" target="_blank">Şəkil</a>
+                </td>
+                <td>
+                    <span ng-if="ad.adStatus">Aktiv</span>
+                    <span ng-if="!ad.adStatus">Qeyri aktiv</span>
+                </td>
+
+                <td>
+                    <button ng-click="getAdvertiseDetails(ad.id)" class="btn btn-primary me-2"><i class="fas fa-chart-bar"></i> Statistika</button>
+                    <button ng-click="makeAdvertiseActive(ad.id)" class="btn btn-success me-2"><i class="fas fa-check"></i> Aktiv et</button>
+                    <button ng-click="deactivateAdvertise(ad.id)" class="btn btn-warning me-2"><i class="fas fa-times"></i> Deaktiv et</button>
+                    <button ng-click="deleteAdvertise (ad.id)" class="btn btn-danger"><i class="fas fa-trash"></i> Sil</button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+
+    <!-- Advertise Form -->
+    <div class="modal fade" id="advertiseModal" tabindex="-1" aria-labelledby="advertiseModal" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Reklam əlavə et</h5>
+                    <button type="button" ng-click="closeNewAdvertiseClick()" class="btn-close">
+                        <i class="fa-solid fa-square-xmark"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- Add your form here -->
+                    <form ng-submit="submitForm()" novalidate>
+                        <div class="container">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="title">Başlıq</label>
+                                        <input type="text" class="form-control" id="title" ng-model="advert.Title" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="description">Haqqında</label>
+                                        <input type="text" class="form-control" id="description" ng-model="advert.Description" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+
+                                    <div class="form-group">
+                                        <label style="color: red">Tələb olunan hündürlük 250 px</label>
+                                        <label for="imageUrl">Şəkili yükləyin</label>
+                                        <input type="file" class="form-control" id="imageUrl" file-model="imageFile" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="targetUrl">Hədəf URL</label>
+                                        <input type="text" class="form-control" id="targetUrl" ng-model="advert.TargetUrl">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-6 col-12 mb-md-0 mb-2">
+                                    <button type="submit" class="btn btn-primary w-100">Yadda Saxla</button>
+                                </div>
+                                <div class="col-md-6 col-12">
+                                    <button type="button" class="btn btn-secondary w-100" ng-click="closeAdvertisementModal()">Bağla</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <input type="hidden" id="adPlacementValue"/>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="advertiseDetails" tabindex="-1" aria-labelledby="advertiseModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="advertiseModalLabel">Reklamın Detalı</h5>
+                    <button type="button" class="btn-close" ng-click="closeAdvertiseDetails()">
+                        <i class="fa-solid fa-square-xmark"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <p><strong>Reklam ölçüləri:</strong> {{advertiseDetails.adSize}}</p>
+                                <p><strong>Hədəf link:</strong> {{advertiseDetails.targetUrl}}</p>
+                            </div>
+                            <div class="col-md-12">
+                                <canvas id="bar" class="chart chart-bar" chart-data="chartData" chart-labels="chartLabels" chart-series="chartSeries"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" ng-click="closeAdvertiseDetails()" class="btn btn-secondary">Bağla</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+@section Scripts {
+    <script src="~/Script/advertise.js" asp-append-version="true"></script>
+}

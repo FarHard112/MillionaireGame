@@ -22,6 +22,72 @@ namespace WhoWantsToBeAMillionaireGame.DataBase.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("WhoWantsToBeAMillionaireGame.DataBase.Entities.Advertise", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("AdPlacement")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("AdSize")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("AdStatus")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("AdType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("AdvertiserId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("Clicks")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("Impressions")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("TargetUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Advertises");
+                });
+
             modelBuilder.Entity("WhoWantsToBeAMillionaireGame.DataBase.Entities.Answer", b =>
                 {
                     b.Property<Guid>("Id")
@@ -46,6 +112,27 @@ namespace WhoWantsToBeAMillionaireGame.DataBase.Migrations
                         .IsUnique();
 
                     b.ToTable("Answer");
+                });
+
+            modelBuilder.Entity("WhoWantsToBeAMillionaireGame.DataBase.Entities.ClickedAd", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("AdvertisementId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("IPAddress")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ClickedAds");
                 });
 
             modelBuilder.Entity("WhoWantsToBeAMillionaireGame.DataBase.Entities.ColorPrize", b =>
@@ -103,6 +190,43 @@ namespace WhoWantsToBeAMillionaireGame.DataBase.Migrations
                     b.HasIndex("GameId", "QuestionId");
 
                     b.ToTable("GameQuestions");
+                });
+
+            modelBuilder.Entity("WhoWantsToBeAMillionaireGame.DataBase.Entities.GameTimer", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int?>("Duration")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("GameTimer");
+                });
+
+            modelBuilder.Entity("WhoWantsToBeAMillionaireGame.DataBase.Entities.LoginUser", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Surname")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("LoginUsers");
                 });
 
             modelBuilder.Entity("WhoWantsToBeAMillionaireGame.DataBase.Entities.Prize", b =>
