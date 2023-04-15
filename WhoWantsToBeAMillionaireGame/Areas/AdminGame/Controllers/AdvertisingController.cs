@@ -13,13 +13,15 @@ namespace WhoWantsToBeAMillionaireGame.Areas.AdminGame.Controllers
     {
         public IAdvertiseService _advertiseService { get; }
         private readonly IWebHostEnvironment _environment;
+        private readonly ISocialMediaLinkService _socialMediaLinkService;
         public IMapper Mapper { get; }
 
-        public AdvertisingController(IAdvertiseService advertiseService, IMapper mapper, IWebHostEnvironment environment)
+        public AdvertisingController(IAdvertiseService advertiseService, IMapper mapper, IWebHostEnvironment environment, ISocialMediaLinkService socialMediaLinkService)
         {
             _advertiseService = advertiseService;
             Mapper = mapper;
             _environment = environment;
+            _socialMediaLinkService = socialMediaLinkService;
         }
         [HttpGet]
         public IActionResult Index()
@@ -121,5 +123,21 @@ namespace WhoWantsToBeAMillionaireGame.Areas.AdminGame.Controllers
 
             return Json("notFound");
         }
+
+        [HttpPost]
+        public async Task<IActionResult> SaveSocialMediaLinks([FromForm] SocialMediaLinkDto socialMediaLinkDto)
+        {
+            if (socialMediaLinkDto != null)
+            {
+                var entity = await _socialMediaLinkService.GetSocialMediaLink();
+                entity.FacebookUrl = socialMediaLinkDto.FacebookUrl;
+                entity.TikTokUrl = socialMediaLinkDto.TikTokUrl;
+                entity.InstagramUrl = socialMediaLinkDto.InstagramUrl;
+                await _socialMediaLinkService.UpdateSocialMediaLink(entity);
+                return Json("OK");
+            }
+            return Json("notFound");
+        }
+
     }
 }

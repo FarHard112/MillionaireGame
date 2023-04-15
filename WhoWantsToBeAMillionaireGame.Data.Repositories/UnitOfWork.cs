@@ -19,6 +19,7 @@ public class UnitOfWork : IUnitOfWork
     public IRepository<Advertise> Advertise { get; }
     public IRepository<ClickedAd> ClickedAd { get; }
     public IRepository<GameTimer> GameTimer { get; }
+    public IRepository<SocialMediaLink> SocialMediaLink { get; }
 
 
     public UnitOfWork(WhoWantsToBeAMillionaireGameDbContext dbContext,
@@ -26,7 +27,7 @@ public class UnitOfWork : IUnitOfWork
         IRepository<Answer> answer,
         IRepository<Game> game,
         IRepository<GameQuestion> gameQuestion,
-        IRepository<Prize> gamePrize, IRepository<ColorPrize> colorPrize, IRepository<LoginUser> loginUser, IRepository<Advertise> advertise, IRepository<ClickedAd> clickedAd,IRepository<GameTimer>gameTimer)
+        IRepository<Prize> gamePrize, IRepository<ColorPrize> colorPrize, IRepository<LoginUser> loginUser, IRepository<Advertise> advertise, IRepository<ClickedAd> clickedAd,IRepository<GameTimer>gameTimer,IRepository<SocialMediaLink>socialMediaLink)
     {
         _dbContext = dbContext;
 
@@ -40,6 +41,7 @@ public class UnitOfWork : IUnitOfWork
         Advertise = advertise;
         ClickedAd= clickedAd;
         GameTimer = gameTimer;
+        SocialMediaLink = socialMediaLink;
     }
 
     public async Task<int> Commit()

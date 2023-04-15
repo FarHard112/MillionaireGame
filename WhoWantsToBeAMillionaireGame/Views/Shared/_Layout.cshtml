@@ -5,9 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Who Wants to Be a Millionaire</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/WhoWantsToBeAMillionaireGame.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/timer.css" asp-append-version="true" />
+    <style>
+        .social-icons a {
+            font-size: 1.5rem;
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -31,11 +37,19 @@
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2023 - Oyna Qazan
+ <footer class="border-top footer text-muted">
+    <div class="container">
+        &copy; 2023 - Oyna Qazan
+        <div class="float-end social-icons">
+            <a href="@ViewBag.FacebookUrl" target="_blank" class="text-muted me-3"><i class="fab fa-facebook-f"></i></a>
+            <a href="@ViewBag.InstagramUrl" target="_blank" class="text-muted me-3"><i class="fab fa-instagram"></i></a>
+            <a href="@ViewBag.TikTokUrl" target="_blank" class="text-muted"><i class="fab fa-tiktok"></i></a>
         </div>
-    </footer>
+    </div>
+</footer>
+
+
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

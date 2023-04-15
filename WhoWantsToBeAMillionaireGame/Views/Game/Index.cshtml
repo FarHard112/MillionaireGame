@@ -32,7 +32,7 @@
             <div class="col mb-2 align-self-center text-center">
                 <span class="fs-2" id="message"></span>
                 <div class="timer-container">
-                    <span class="fs-2" id="timer">60</span>
+                    <span class="fs-2" id="timer"></span>
                 </div>
             </div>
 
@@ -102,18 +102,19 @@
 
 
 @section Scripts
-    {
+{
     <script type="text/javascript">
         let timer;
         let timeLeft = 10;
 
-        $(document).ready(function () {
+        $(document).ready(function() {
             @if (Model.Advertisement != null)
-        {
-            <text>
-                sendAdIdToMiddleware('@Model.Advertisement.Id');
-            </text>
-        }
+            {
+                <text>
+                    sendAdIdToMiddleware('@Model.Advertisement.Id');
+                </text>
+            }
+            timeLeft = @Model.gameTimer.Duration;
             startTimer();
 
         });
@@ -124,6 +125,7 @@
 
             return userChoice;
         }
+
         function handleAdClick(event, adId, targetUrl) {
             event.preventDefault(); // Prevent the default click action
             registerAdClick(adId);
@@ -134,10 +136,10 @@
             $.ajax({
                 type: 'POST',
                 url: '/Game/RegisterAdClick?Id=' + adId,
-                success: function () {
+                success: function() {
                     console.log('Ad click registered successfully');
                 },
-                error: function (xhr) {
+                error: function(xhr) {
                     console.error('Error registering ad click:', xhr.responseText);
                 }
             });
@@ -149,13 +151,19 @@
                 type: 'GET',
                 url: '/PageLoadEvent',
                 data: { adId: adId },
-                success: function () {
+                success: function() {
                     console.log('Ad ID sent successfully');
                 },
-                error: function (xhr) {
+                error: function(xhr) {
                     console.error('Error sending ad ID:', xhr.responseText);
                 }
             });
+        }
+
+        function resetTimer() {
+            clearInterval(timer);
+            timeLeft = @Model.gameTimer.Duration;
+            startTimer();
         }
 
         function startTimer() {
@@ -163,15 +171,16 @@
             timerElement.classList.add('timer-animation');
 
             timer = setInterval(function() {
-                timeLeft--;
-                timerElement.textContent = timeLeft;
+                    timeLeft--;
+                    timerElement.textContent = timeLeft;
 
-                if (timeLeft <= 0) {
-                    clearInterval(timer);
-                    timerElement.classList.remove('timer-animation');
-                    handleTimeUp();
-                }
-            }, 1000);
+                    if (timeLeft <= 0) {
+                        clearInterval(timer);
+                        timerElement.classList.remove('timer-animation');
+                        handleTimeUp();
+                    }
+                },
+                1000);
         }
 
         function handleTimeUp() {
@@ -182,11 +191,11 @@
             $.ajax({
                 type: 'GET',
                 url: '/Game/GameOver',
-                success: function () {
-                   alert("Oyun bitdi !");
-                   window.location.href = '/';
+                success: function() {
+                    alert("Oyun bitdi !");
+                    window.location.href = '/';
                 },
-                error: function (xhr) {
+                error: function(xhr) {
                     console.error('Error sending Game Over request:', xhr.responseText);
                 }
             });

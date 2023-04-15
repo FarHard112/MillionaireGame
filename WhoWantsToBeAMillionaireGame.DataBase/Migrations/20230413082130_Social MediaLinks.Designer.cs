@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WhoWantsToBeAMillionaireGame.DataBase;
 
@@ -11,9 +12,11 @@ using WhoWantsToBeAMillionaireGame.DataBase;
 namespace WhoWantsToBeAMillionaireGame.DataBase.Migrations
 {
     [DbContext(typeof(WhoWantsToBeAMillionaireGameDbContext))]
-    partial class WhoWantsToBeAMillionaireGameDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230413082130_Social MediaLinks")]
+    partial class SocialMediaLinks
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -227,42 +230,6 @@ namespace WhoWantsToBeAMillionaireGame.DataBase.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("LoginUsers");
-                });
-
-            modelBuilder.Entity("WhoWantsToBeAMillionaireGame.DataBase.Entities.Logs", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Exception")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Level")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Message")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("MessageTemplate")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Properties")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTimeOffset>("TimeStamp")
-                        .HasColumnType("datetimeoffset");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Logs");
                 });
 
             modelBuilder.Entity("WhoWantsToBeAMillionaireGame.DataBase.Entities.Prize", b =>

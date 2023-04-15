@@ -14,11 +14,17 @@
 
     /* Custom styles */
 
-    .table-striped tbody tr:nth-of-type(odd) { background-color: rgba(0, 0, 0, .05); }
+    .table-striped tbody tr:nth-of-type(odd) {
+        background-color: rgba(0, 0, 0, .05);
+    }
 
-    .table-striped tbody tr:hover { background-color: rgba(0, 0, 0, .075); }
+    .table-striped tbody tr:hover {
+        background-color: rgba(0, 0, 0, .075);
+    }
 
-    .btn i { margin-right: 5px; }
+    .btn i {
+        margin-right: 5px;
+    }
 
     /* Bigger table */
 
@@ -26,9 +32,9 @@
         font-size: 1.25rem; /* Adjust font size */
     }
 
-    .table-bigger td, .table-bigger th {
-        padding: 20px; /* Adjust padding */
-    }
+        .table-bigger td, .table-bigger th {
+            padding: 20px; /* Adjust padding */
+        }
 
 </style>
 
@@ -41,6 +47,8 @@
             <button type="button" ng-click="newAdvertiseClick()" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#advertiseModal">
                 <i class="fas fa-plus"></i> Yeni Reklam
             </button>
+            <button ng-click="openSocialMediaModal()" class="btn btn-info me-2" data-bs-toggle="modal" data-bs-target="#editSocialMediaLinkModal"><i class="fas fa-edit"></i> Sosial Şəbəkə linkləri</button>
+
             <h4 style="color: red">*Eyni zamanda ancaq 1 reklam aktiv ola bilər!</h4>
         </div>
     </div>
@@ -49,35 +57,35 @@
     <div class="table-responsive">
         <table class="table table-bordered table-striped table-bigger">
             <thead>
-            <tr>
-                <th>#</th>
-                <th><i class="fas fa-heading"></i> Başlıq</th>
-                <th><i class="fas fa-info-circle"></i> Haqqında</th>
-                <th><i class="fas fa-image"></i>Şəkil</th>
-                <th><i class="fas fa-toggle-on"></i>Statusu</th>
-                <th><i class="fas fa-cogs"></i> Əməliyyatlar</th>
-            </tr>
+                <tr>
+                    <th>#</th>
+                    <th><i class="fas fa-heading"></i> Başlıq</th>
+                    <th><i class="fas fa-info-circle"></i> Haqqında</th>
+                    <th><i class="fas fa-image"></i>Şəkil</th>
+                    <th><i class="fas fa-toggle-on"></i>Statusu</th>
+                    <th><i class="fas fa-cogs"></i> Əməliyyatlar</th>
+                </tr>
             </thead>
             <tbody>
-            <tr ng-repeat="ad in adverts">
-                <td>{{$index+1}}</td>
-                <td>{{ad.title}}</td>
-                <td>{{ad.description}}</td>
-                <td>
-                    <a href="/{{ad.imageUrl}}" target="_blank">Şəkil</a>
-                </td>
-                <td>
-                    <span ng-if="ad.adStatus">Aktiv</span>
-                    <span ng-if="!ad.adStatus">Qeyri aktiv</span>
-                </td>
+                <tr ng-repeat="ad in adverts">
+                    <td>{{$index+1}}</td>
+                    <td>{{ad.title}}</td>
+                    <td>{{ad.description}}</td>
+                    <td>
+                        <a href="/{{ad.imageUrl}}" target="_blank">Şəkil</a>
+                    </td>
+                    <td>
+                        <span ng-if="ad.adStatus">Aktiv</span>
+                        <span ng-if="!ad.adStatus">Qeyri aktiv</span>
+                    </td>
 
-                <td>
-                    <button ng-click="getAdvertiseDetails(ad.id)" class="btn btn-primary me-2"><i class="fas fa-chart-bar"></i> Statistika</button>
-                    <button ng-click="makeAdvertiseActive(ad.id)" class="btn btn-success me-2"><i class="fas fa-check"></i> Aktiv et</button>
-                    <button ng-click="deactivateAdvertise(ad.id)" class="btn btn-warning me-2"><i class="fas fa-times"></i> Deaktiv et</button>
-                    <button ng-click="deleteAdvertise (ad.id)" class="btn btn-danger"><i class="fas fa-trash"></i> Sil</button>
-                </td>
-            </tr>
+                    <td>
+                        <button ng-click="getAdvertiseDetails(ad.id)" class="btn btn-primary me-2"><i class="fas fa-chart-bar"></i> Statistika</button>
+                        <button ng-click="makeAdvertiseActive(ad.id)" class="btn btn-success me-2"><i class="fas fa-check"></i> Aktiv et</button>
+                        <button ng-click="deactivateAdvertise(ad.id)" class="btn btn-warning me-2"><i class="fas fa-times"></i> Deaktiv et</button>
+                        <button ng-click="deleteAdvertise (ad.id)" class="btn btn-danger"><i class="fas fa-trash"></i> Sil</button>
+                    </td>
+                </tr>
             </tbody>
         </table>
     </div>
@@ -138,7 +146,7 @@
                 </div>
             </div>
         </div>
-        <input type="hidden" id="adPlacementValue"/>
+        <input type="hidden" id="adPlacementValue" />
     </div>
 
     <!-- Modal -->
@@ -170,8 +178,46 @@
             </div>
         </div>
     </div>
+    <div class="modal fade" id="socialMediaModal" tabindex="-1" aria-labelledby="socialMediaModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="socialMediaModalLabel">Sosial şəbəkə linkləri </h5>
+                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close">
+                        <i class="fa-solid fa-square-xmark"></i>
+                    </button>
+                </div>
+                <form ng-submit="saveSocialMediaLinks()">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="facebookUrl">Facebook URL</label>
+                            <input type="text" class="form-control" id="facebookUrl" ng-model="socialMediaLinkDto.FacebookUrl">
+                        </div>
+                        <div class="form-group">
+                            <label for="tiktokUrl">TikTok URL</label>
+                            <input type="text" class="form-control" id="tiktokUrl" ng-model="socialMediaLinkDto.TikTokUrl">
+                        </div>
+                        <div class="form-group">
+                            <label for="instagramUrl">Instagram URL</label>
+                            <input type="text" class="form-control" id="instagramUrl" ng-model="socialMediaLinkDto.InstagramUrl">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal" ng-click="closeSocialMediaModal()">Bağla</button>
+                        <button type="submit" class="btn btn-primary">Yadda Saxla</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
 </div>
+
+<!--Social Media Links Modal-->
+<!-- Edit Social Media Link Modal -->
+
+
+
 
 @section Scripts {
     <script src="~/Script/advertise.js" asp-append-version="true"></script>

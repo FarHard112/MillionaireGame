@@ -14,16 +14,20 @@ public class GameController : Controller
     private readonly IPrizeService _prizeService;
     private readonly IAdvertiseService _advertiseService;
     private readonly IClickedAdService _clickedAdService;
+    private readonly IGameTimer _gameTimerService;
+    private readonly ISocialMediaLinkService _socialMediaLinkService;
     private const string GameSessionKey = "_Game";
 
     public GameController(IMapper mapper,
-        IGameService gameService, IPrizeService prizeService, IAdvertiseService advertiseService, IClickedAdService clickedAdService)
+        IGameService gameService, IPrizeService prizeService, IAdvertiseService advertiseService, IClickedAdService clickedAdService, IGameTimer gameTimerService, ISocialMediaLinkService socialMediaLinkService)
     {
         _mapper = mapper;
         _gameService = gameService;
         _prizeService = prizeService;
         _advertiseService = advertiseService;
         _clickedAdService = clickedAdService;
+        _gameTimerService = gameTimerService;
+        _socialMediaLinkService = socialMediaLinkService;
     }
 
     [HttpGet]
@@ -32,7 +36,6 @@ public class GameController : Controller
         try
         {
             var isSucceed = HttpContext.Session.TryGetValue<GameSession>(GameSessionKey, out var gameSession);
-
             if (!isSucceed)
             {
                 gameSession = new GameSession
@@ -45,13 +48,17 @@ public class GameController : Controller
                 HttpContext.Session.Set(GameSessionKey, gameSession);
                 await _gameService.CreateNewGameAsync(gameSession.GameId);
             }
-
             var dto = await _gameService.GetGameById(gameSession.GameId);
             var model = _mapper.Map<GameModel>(dto);
             model.PrizeList = await _prizeService.GetAllPrizesAsync();
             var advertises = await _advertiseService.GetAllAdvertisesAsync();
             if (advertises.FirstOrDefault(x => x.AdStatus) != null) model.Advertisement = advertises.FirstOrDefault(x => x.AdStatus);
             model.UserChoice = gameSession.UserChoiceId;
+            model.gameTimer = await _gameTimerService.GetGameTimer();
+            var entity = await _socialMediaLinkService.GetSocialMediaLink();
+            ViewBag.TikTokUrl = entity.TikTokUrl;
+            ViewBag.InstagramUrl = entity.InstagramUrl;
+            ViewBag.FacebookUrl = entity.FacebookUrl;
             return View(model);
         }
         catch (Exception e)

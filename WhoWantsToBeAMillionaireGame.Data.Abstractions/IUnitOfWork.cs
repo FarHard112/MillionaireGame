@@ -15,5 +15,6 @@ public interface IUnitOfWork
     IRepository<Advertise> Advertise { get; }
     IRepository<ClickedAd> ClickedAd { get; }
     IRepository<GameTimer> GameTimer { get; }
+    IRepository<SocialMediaLink> SocialMediaLink { get; }
     Task<int> Commit();
 }

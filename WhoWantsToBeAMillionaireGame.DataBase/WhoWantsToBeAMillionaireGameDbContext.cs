@@ -20,6 +20,8 @@ public class WhoWantsToBeAMillionaireGameDbContext : DbContext
     public DbSet<Advertise> Advertises { get; set; }
     public DbSet<ClickedAd> ClickedAds { get; set; }
     public DbSet<GameTimer> GameTimer { get; set; }
+    public DbSet<SocialMediaLink> SocialMediaLinks { get; set; }
+    public DbSet<Logs> Logs { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

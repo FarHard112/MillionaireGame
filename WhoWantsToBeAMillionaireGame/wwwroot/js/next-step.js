@@ -2,6 +2,7 @@
     hideNextStepButtonButton();
     showGiveMeMyMoneyButtonButton();
     setPropertyForAnswerButtonsByDefault();
+    resetTimer();
     let isMarkSucceed = await markQuestionAsSuccessfulOnServerAsync();
     let gameQuestion;
     if (isMarkSucceed) {

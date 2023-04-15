@@ -8,5 +8,6 @@ public class GameModel
     public Guid UserChoice { get; set; }
     public List<PrizeComboBoxDto> PrizeList { get; set; }
     public AdvertiseDto Advertisement { get; set; }
+    public GameTimerDto gameTimer { get; set; }
 
 }

@@ -21,10 +21,13 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        builder.Host.UseSerilog((ctx, lc) => lc
-            .WriteTo.Console()
-            .WriteTo.File(GetPathToLogFile(),
-                LogEventLevel.Information));
+        var configuration = new ConfigurationBuilder()
+            .AddJsonFile("appsettings.json")
+            .Build();
+
+        Log.Logger = new LoggerConfiguration()
+            .ReadFrom.Configuration(configuration)
+            .CreateLogger();
 
         // Add services to the container.
         var connectionString = builder.Configuration.GetConnectionString("Default");
@@ -57,6 +60,7 @@ public class Program
         builder.Services.AddScoped<IAdvertiseService, AdvertiseService>();
         builder.Services.AddScoped<IClickedAdService, ClickedAdService>();
         builder.Services.AddScoped<IGameTimer, GameTimerService>();
+        builder.Services.AddScoped<ISocialMediaLinkService, SocialMediaLinkService>();
 
 
         // Add repositories
@@ -70,48 +74,64 @@ public class Program
         builder.Services.AddScoped<IRepository<Advertise>, Repository<Advertise>>();
         builder.Services.AddScoped<IRepository<ClickedAd>, Repository<ClickedAd>>();
         builder.Services.AddScoped<IRepository<GameTimer>, Repository<GameTimer>>();
-        var app = builder.Build();
+        builder.Services.AddScoped<IRepository<SocialMediaLink>, Repository<SocialMediaLink>>();
 
-        // Configure the HTTP request pipeline.
-        if (!app.Environment.IsDevelopment())
+        Log.Information("Start !!!");
+        try
         {
-            app.UseExceptionHandler("/Home/Error");
-            app.UseHsts();
-        }
+            var app = builder.Build();
+
+            // Configure the HTTP request pipeline.
+            if (!app.Environment.IsDevelopment())
+            {
+                app.UseExceptionHandler("/Home/Error");
+                app.UseHsts();
+            }
 
 
 
-        app.UseHttpsRedirection();
-        app.UseStaticFiles();
-        app.UseStaticFiles(new StaticFileOptions
-        {
-            FileProvider = new PhysicalFileProvider(
-                Path.Combine(app.Environment.ContentRootPath, "uploads")),
-            RequestPath = "/uploads"
-        });
-        app.UseRouting();
+            app.UseHttpsRedirection();
+            app.UseStaticFiles();
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(
+                    Path.Combine(app.Environment.ContentRootPath, "uploads")),
+                RequestPath = "/uploads"
+            });
+            app.UseRouting();
 
-        app.UseAuthentication();
+            app.UseAuthentication();
 
-        app.UseAuthorization();
-        app.UseSession();
-        app.UseMiddleware<PageLoadMiddleware>();
+            app.UseAuthorization();
+            app.UseSession();
+            app.UseMiddleware<PageLoadMiddleware>();
 
 
-        app.UseEndpoints(endpoints =>
-        {
-            endpoints.MapAreaControllerRoute(
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapAreaControllerRoute(
                     name: "AdminGame",
                     areaName: "AdminGame",
                     pattern: "admin/{controller=Auth}/{action=Login}/{id?}"
                 );
 
-            endpoints.MapControllerRoute(name: "default", pattern: "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapControllerRoute(name: "default", pattern: "{controller=Home}/{action=Index}/{id?}");
 
-        });
+            });
 
 
-        app.Run();
+            app.Run();
+        }
+        catch (Exception ex)
+        {
+            Log.Fatal(ex, "The application failed to start");
+
+        }
+        finally
+        {
+            Log.CloseAndFlush();
+        }
+     
     }
 
     private static string GetPathToLogFile()
