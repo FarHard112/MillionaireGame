@@ -1,6 +1,6 @@
 # Millionaire Game
 
-Millionaire Game is a fun, interactive console-based quiz game inspired by the popular television show "Who Wants to Be a Millionaire?". This game challenges players with a series of multiple-choice questions, where they can use lifelines to help them reach the final question and become a virtual millionaire.
+Millionaire Game is a fun, interactive web-based quiz game inspired by the popular television show "Who Wants to Be a Millionaire?". This game challenges players with a series of multiple-choice questions, where they can use lifelines to help them reach the final question and become a virtual millionaire.
 
 ## Features
 
